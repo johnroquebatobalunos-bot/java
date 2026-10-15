@@ -1,6 +1,6 @@
 # School Suggestion System
 
-A Java 17 desktop application built with **JavaFX** and **MySQL JDBC**. The user interface is written entirely in Java, without FXML files.
+A Java 17 desktop application built with JavaFX and MySQL JDBC. The GUI is written entirely in Java without FXML.
 
 ## 1. Project Structure
 
@@ -10,191 +10,131 @@ school-suggestion-system/
 ├── README.md
 ├── sql/
 │   └── schema.sql
-└── src/
-    └── main/
-        └── java/
-            ├── Main.java
-            ├── dao/
-            │   ├── PasswordHasher.java
-            │   ├── SuggestionDAO.java
-            │   └── UserDAO.java
-            ├── db/
-            │   └── DatabaseConnection.java
-            ├── model/
-            │   ├── Suggestion.java
-            │   └── User.java
-            └── ui/
-                ├── AdminDashboard.java
-                ├── LoginView.java
-                ├── RegisterView.java
-                └── StudentDashboard.java
+└── src/main/java/
+    ├── Main.java
+    ├── dao/
+    │   ├── PasswordHasher.java
+    │   ├── SuggestionDAO.java
+    │   └── UserDAO.java
+    ├── db/DatabaseConnection.java
+    ├── model/
+    │   ├── Suggestion.java
+    │   └── User.java
+    └── ui/
+        ├── AdminDashboard.java
+        ├── LoginView.java
+        ├── RegisterView.java
+        └── StudentDashboard.java
 ```
 
-## 2. Database Setup
+## 2. Technologies
 
-### Step 1: Start MySQL
+- Java 17 (JDK)
+- JavaFX 17 (GUI)
+- Apache NetBeans (IDE)
+- Maven (dependency management)
+- MySQL Server and JDBC (database)
 
-Install MySQL Server and make sure the service is running.
+## 3. Database Setup
 
-### Step 2: Create the Database
-
-Open MySQL Workbench or a terminal and execute:
+1. Start MySQL Server.
+2. Open PowerShell in the project directory and run:
 
 ```bash
 mysql -u root -p < sql/schema.sql
 ```
 
-This script creates the following:
+Alternatively, execute `sql/schema.sql` in MySQL Workbench.
 
-- Database: `school_suggestion_db`
-- Required database tables
-- Cascading foreign key
-- Default administrator account
+This creates `school_suggestion_db`, the required tables, a cascading foreign key, and the default administrator account.
 
-**Default administrator credentials**
+**Admin login:** `admin`  
+**Password:** `admin123`
 
-- Username: `admin`
-- Password: `admin123`
-
-The administrator password is stored as a PBKDF2 hash.
-
-### Step 3: Configure the Database Connection
-
-Default connection settings:
+Default connection:
 
 ```text
-JDBC URL: jdbc:mysql://localhost:3306/school_suggestion_db
+URL: jdbc:mysql://localhost:3306/school_suggestion_db
 Username: root
 Password: (empty)
 ```
 
-If your MySQL account uses a password, configure these environment variables in PowerShell before opening NetBeans:
+For a custom MySQL account, configure these PowerShell environment variables before running the application:
 
 ```powershell
 $env:SCHOOL_DB_USER = "root"
 $env:SCHOOL_DB_PASSWORD = "your-mysql-password"
-```
-
-You can optionally override the full JDBC URL:
-
-```powershell
 $env:SCHOOL_DB_URL = "jdbc:mysql://localhost:3306/school_suggestion_db"
 ```
 
-Restart NetBeans after setting the variables so the IDE can access them.
+`SCHOOL_DB_URL` is optional. Restart NetBeans after setting variables if you run the project through the IDE.
 
-## 3. NetBeans Setup (JDK 17)
+## 4. NetBeans Setup and GUI Execution
 
-### Step 1: Install the Required Software
+Install JDK 17, Apache NetBeans, MySQL Server, and Maven. Open NetBeans, select **File → Open Project**, and choose the folder containing `pom.xml`. Allow Maven to download the dependencies.
 
-Make sure you have:
+To launch the GUI using PowerShell, run:
 
-- JDK 17
-- Apache NetBeans
-- MySQL Server
-- Maven
+```powershell
+cd "$HOME\Desktop\java"
 
-### Step 2: Open the Project
+$env:JAVA_HOME = 'C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot'
 
-1. Launch NetBeans.
-2. Select **File → Open Project**.
-3. Choose the `school-suggestion-system` folder containing `pom.xml`.
-4. Allow Maven to download the required dependencies.
+$env:Path = "$env:JAVA_HOME\bin;$HOME\.maven\maven-3.10.0\bin;$env:Path"
 
-### Step 3: Verify Dependencies
-
-The `pom.xml` should include:
-
-- JavaFX Controls 17
-- MySQL Connector/J
-- JavaFX Maven Plugin
-
-For a Maven project, these dependencies should be managed through `pom.xml`. You normally do not need to add the JavaFX SDK or MySQL connector JAR files manually.
-
-### Step 4: Run the Application
-
-In NetBeans, select the project and click **Run Project**.
-
-Alternatively, open a terminal in the project directory and execute:
-
-```bash
 mvn javafx:run
 ```
 
-If you are using a manually configured, non-Maven project, set the JavaFX VM options under **Project Properties → Run**:
+**Important:** The folder must contain `pom.xml`. If your project is inside `Desktop\java\school-suggestion-system`, navigate to that folder instead.
+
+The `pom.xml` should declare JavaFX Controls 17, MySQL Connector/J, and the JavaFX Maven Plugin. Maven handles dependencies and JavaFX launch configuration. For a manually configured, non-Maven project, add the JavaFX SDK and MySQL connector JARs, then use:
 
 ```text
 --module-path "C:\javafx-sdk-17\lib" --add-modules javafx.controls
 ```
 
-Replace the SDK path with your actual JavaFX SDK location.
+## 5. System Features
 
-## 4. Application Features
-
-### Student Account
-
-Students can:
-
-- Register an account.
-- Log in and log out.
+**Student:**
+- Register, log in, and log out.
 - Submit suggestions with a subject and message.
-- View their own suggestion history.
+- View only their own suggestion history.
+- Cannot view other students' suggestions or delete suggestions through the application.
 
-Students cannot view other students' suggestions or delete suggestions through the application.
-
-### Administrator Account
-
-Administrators can:
-
+**Administrator:**
 - Log in to the admin dashboard.
-- View submitted student suggestions.
-- Refresh the suggestion list.
-- Select a suggestion for deletion.
-- Confirm before deleting a selected suggestion.
+- View all student suggestions.
+- Refresh the list.
+- Delete selected suggestions after confirmation.
 
-## 5. Testing the Application
+**Validation:** Required fields, matching passwords, and unique usernames are checked during registration.
 
-Follow these steps to verify that the system works correctly.
+## 6. Testing
 
-1. **Start MySQL.** Confirm that the database server is running.
-2. **Create the database.** Execute `sql/schema.sql`.
-3. **Launch the application.** Run the project through NetBeans or Maven.
-4. **Test administrator login.** Sign in using `admin` and `admin123`.
-5. **Test the admin dashboard.** Confirm that suggestions appear, Refresh reloads the list, and Delete selected asks for confirmation.
-6. **Test student registration.** Create an account with a full name, unique username, and matching passwords.
-7. **Test validation.** Try submitting blank fields, mismatched passwords, and an already registered username.
-8. **Test suggestion submission.** Log in as a student and submit a suggestion with both a subject and message.
-9. **Verify suggestion history.** Confirm that the student can see their own suggestion and the administrator can see it in the admin dashboard.
-10. **Test account privacy.** Log in as a different student and confirm that the first student's suggestion history is not visible.
+1. Start MySQL and execute `sql/schema.sql`.
+2. Run `mvn javafx:run`.
+3. Log in as `admin` using `admin123`.
+4. Test viewing, refreshing, and deleting suggestions.
+5. Register a student and test blank fields, mismatched passwords, and duplicate usernames.
+6. Submit a suggestion and verify it appears in the student's history and admin dashboard.
+7. Log in as another student and verify that the first student's history remains private.
 
-## 6. Security Features
+## 7. Security
 
-The application uses the following safeguards:
+- Student passwords use PBKDF2WithHmacSHA256 with a fresh random salt.
+- SQL statements use `PreparedStatement`.
+- Database resources use try-with-resources.
+- Student and administrator permissions are separated.
+- Suggestion deletion requires administrator confirmation.
 
-- **Password hashing:** PBKDF2WithHmacSHA256 with a fresh random salt for student passwords.
-- **Prepared statements:** All application SQL statements use `PreparedStatement`.
-- **Automatic resource cleanup:** Connections and statements use try-with-resources.
-- **Input validation:** Registration checks required fields, password matching, and username uniqueness.
-- **Deletion confirmation:** The administrator must confirm before a selected suggestion is deleted.
-- **Role-based access:** Students and administrators have different dashboard permissions.
+## 8. Troubleshooting
 
-## 7. Technologies Used
+If the GUI or database fails to start:
 
-| Technology | Purpose |
-|---|---|
-| Java 17 | Main programming language |
-| JavaFX | Desktop user interface |
-| NetBeans | Development environment |
-| Maven | Dependency and project management |
-| MySQL | Database management |
-| JDBC | Java-to-MySQL connection |
+- Check that Java 17 is active using `java -version`, `javac -version`, and `mvn -version`.
+- Confirm Maven is available in the configured path.
+- Make sure you are in the folder containing `pom.xml`.
+- Ensure MySQL is running and the database script executed successfully.
+- Verify your database credentials and Maven dependencies.
 
----
-
-**Project Name:** School Suggestion System
-
-**Application Type:** Desktop Application
-
-**Architecture:** JavaFX + MySQL JDBC
-
-**Main Purpose:** Allow students to submit school suggestions while administrators manage and review submitted suggestions.
+**Project Summary:** A JavaFX desktop application that allows students to submit school suggestions and administrators to review and delete them using MySQL.
