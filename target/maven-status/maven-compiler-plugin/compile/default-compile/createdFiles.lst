@@ -1,0 +1,12 @@
+Main.class
+model\Suggestion.class
+dao\SuggestionDAO.class
+ui\RegisterView.class
+dao\PasswordHasher.class
+dao\UserDAO.class
+db\DatabaseConnection.class
+ui\AdminDashboard.class
+ui\LoginView.class
+ui\StudentDashboard.class
+model\User$Role.class
+model\User.class
